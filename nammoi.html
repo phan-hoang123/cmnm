@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tết Nguyên Đán 2026 - Ultimate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. CORE & RESET --- */
+        :root {
+            --red-deep: #4a0000;
+            --red-bright: #990000;
+            --gold-1: #FFD700;
+            --gold-2: #FDB931; 
+            --gold-3: #FFFFE0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: #1a0000;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px; /* Tạo chiều sâu 3D */
+        }
+
+        /* --- 2. BACKGROUND LAYERS --- */
+        .bg-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        /* Lớp nền Gradient động */
+        .bg-gradient {
+            background: radial-gradient(circle at 50% 50%, var(--red-bright), var(--red-deep));
+            z-index: -3;
+            animation: breathe 5s infinite alternate;
+        }
+        @keyframes breathe { 0% { opacity: 0.8; } 100% { opacity: 1; } }
+
+        /* Lớp hoa văn mờ (Pattern) */
+        .bg-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: -2;
+        }
+
+        /* Canvas cho hiệu ứng đom đóm/lồng đèn */
+        #canvas-fx { z-index: -1; }
+
+        /* --- 3. GLASS CARD (THE MAIN CONTAINER) --- */
+        .card-container {
+            position: relative;
+            width: 90%; max-width: 450px;
+            height: 80vh; max-height: 700px;
+            transform-style: preserve-3d; /* Quan trọng cho 3D */
+            transition: transform 0.1s; /* Mượt mà khi nghiêng */
+        }
+
+        .glass-panel {
+            position: absolute; inset: 0;
+            background: rgba(255, 255, 255, 0.05); /* Trong suốt */
+            backdrop-filter: blur(15px); /* Mờ hậu cảnh */
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        /* Khung viền vàng trang trí 4 góc */
+        .corner-deco {
+            position: absolute; width: 50px; height: 50px;
+            border: 2px solid var(--gold-1);
+            transition: all 0.5s;
+        }
+        .tl { top: 15px; left: 15px; border-right: 0; border-bottom: 0; border-radius: 10px 0 0 0; }
+        .tr { top: 15px; right: 15px; border-left: 0; border-bottom: 0; border-radius: 0 10px 0 0; }
+        .bl { bottom: 15px; left: 15px; border-right: 0; border-top: 0; border-radius: 0 0 0 10px; }
+        .br { bottom: 15px; right: 15px; border-left: 0; border-top: 0; border-radius: 0 0 10px 0; }
+
+        /* --- 4. TYPOGRAPHY & ELEMENTS --- */
+        .gold-text {
+            background: linear-gradient(to right, var(--gold-2), var(--gold-3), var(--gold-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
+        }
+
+        h1 { font-family: 'Cinzel Decorative', cursive; font-size: 2.5rem; margin-bottom: 10px; line-height: 1.2; }
+        h2 { font-family: 'Dancing Script', cursive; font-size: 2rem; color: #fff; margin-bottom: 20px; }
+        p { color: #eee; font-size: 1rem; line-height: 1.6; }
+
+        .btn-luxury {
+            margin-top: 30px;
+            padding: 12px 35px;
+            background: transparent;
+            border: 2px solid var(--gold-1);
+            color: var(--gold-1);
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-luxury:hover { background: var(--gold-1); color: var(--red-deep); box-shadow: 0 0 20px var(--gold-1); }
+        
+        /* --- 5. SCREENS LOGIC --- */
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 30px; text-align: center;
+            opacity: 0; pointer-events: none;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bounce effect */
+            transform: translateY(50px) scale(0.9);
+        }
+        .screen.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+        .screen.exit { opacity: 0; transform: translateY(-50px) scale(1.1); filter: blur(10px); }
+
+        /* --- 6. SPECIFIC PAGES --- */
+        /* Page 2: Loading Seal */
+        .seal {
+            width: 120px; height: 120px;
+            border: 3px double var(--gold-1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            animation: rotateSeal 10s linear infinite;
+        }
+        .seal-inner { font-size: 3rem; font-family: 'Cinzel Decorative'; color: var(--gold-1); animation: pulse 2s infinite; }
+        @keyframes rotateSeal { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Page 3: Scroll Text */
+        .scroll-box {
+            height: 60%; width: 100%;
+            overflow-y: auto;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding: 20px 0;
+            margin: 20px 0;
+        }
+        /* Custom scrollbar */
+        .scroll-box::-webkit-scrollbar { width: 4px; }
+        .scroll-box::-webkit-scrollbar-thumb { background: var(--gold-1); border-radius: 2px; }
+
+        /* Page 4: Visualizer (CSS Bars) */
+        .visualizer { display: flex; gap: 5px; height: 50px; align-items: flex-end; margin-bottom: 30px; }
+        .bar { width: 6px; background: var(--gold-1); animation: eq 1s ease-in-out infinite; }
+        .bar:nth-child(1) { height: 20px; animation-delay: 0.1s; }
+        .bar:nth-child(2) { height: 40px; animation-delay: 0.3s; }
+        .bar:nth-child(3) { height: 30px; animation-delay: 0.2s; }
+        .bar:nth-child(4) { height: 50px; animation-delay: 0.4s; }
+        .bar:nth-child(5) { height: 25px; animation-delay: 0.1s; }
+        @keyframes eq { 0%, 100% { height: 10px; opacity: 0.5; } 50% { height: 50px; opacity: 1; box-shadow: 0 0 10px var(--gold-1); } }
+
+        /* --- 7. UTILS --- */
+        .nav-btn {
+            position: absolute; bottom: 20px;
+            font-size: 2rem; color: rgba(255,255,255,0.5);
+            cursor: pointer; animation: floatArrow 2s infinite;
+        }
+        @keyframes floatArrow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer bg-gradient"></div>
+    <div class="bg-layer bg-pattern"></div>
+    <canvas id="canvas-fx" class="bg-layer"></canvas>
+
+    <audio id="bg-music" loop>
+        <source src="van_su_nhu_y.m4a" type="audio/mp4">
+    </audio>
+
+    <div class="card-container" id="tilt-card">
+        <div class="glass-panel">
+            
+            <div class="corner-deco tl"></div>
+            <div class="corner-deco tr"></div>
+            <div class="corner-deco bl"></div>
+            <div class="corner-deco br"></div>
+
+            <section id="p1" class="screen active">
+                <h2 style="font-family: 'Cinzel Decorative'; letter-spacing: 5px; font-size: 1.2rem; color: #fff; opacity: 0.8;">THE YEAR OF SNAKE</h2>
+                <h1 class="gold-text" style="font-size: 4rem; margin: 20px 0;">2026</h1>
+                <h2 style="font-size: 1.5rem;">Ất Tỵ Đại Cát</h2>
+                <p style="margin-top: 20px; font-style: italic;">Chạm vào màn hình để mở</p>
+                <button class="btn-luxury" onclick="app.start()">KHAI ẤN</button>
+            </section>
+
+            <section id="p2" class="screen">
+                <div class="seal"><div class="seal-inner">福</div></div>
+                <h2 style="margin-top: 30px;">Đang nạp vận may...</h2>
+                <div style="width: 200px; height: 2px; background: rgba(255,255,255,0.2); margin-top: 10px;">
+                    <div id="progress" style="width: 0; height: 100%; background: var(--gold-1); transition: width 0.1s;"></div>
+                </div>
+            </section>
+
+            <section id="p3" class="screen">
+                <h1 class="gold-text" style="font-size: 1.8rem;">Thư Pháp Khai Xuân</h1>
+                <div class="scroll-box">
+                    <p id="type-content" style="font-size: 1.1rem; line-height: 2; text-align: center; color: #fff; text-shadow: 0 1px 2px #000;"></p>
+                </div>
+                <div class="nav-btn" onclick="app.next(3)">﹀</div>
+            </section>
+
+            <section id="p4" class="screen">
+                <div class="visualizer">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                </div>
+                <h1 class="gold-text">Vạn Sự Như Ý</h1>
+                <p style="letter-spacing: 2px; margin-bottom: 20px;">TRÚC NHÂN</p>
+                <div style="width: 150px; height: 150px; border-radius: 50%; background: url('https://i.imgur.com/5u2yqC9.png') center/cover; animation: rotateSeal 8s linear infinite; border: 4px solid var(--gold-1); box-shadow: 0 0 30px rgba(255,215,0,0.3);"></div>
+                <div class="nav-btn" onclick="app.next(4)">﹀</div>
+            </section>
+
+            <section id="p5" class="screen">
+                <h1 class="gold-text" style="font-size: 3rem;">Happy New Year</h1>
+                <p style="margin: 20px 0;">Chúc bạn một năm mới bình an, thịnh vượng và rực rỡ như ánh kim!</p>
+                <button class="btn-luxury" onclick="location.reload()">XEM LẠI</button>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        /* --- 1. TILT EFFECT LOGIC (3D) --- */
+        const card = document.getElementById('tilt-card');
+        
+        // Mouse Move (Desktop)
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 25;
+            const y = (window.innerHeight / 2 - e.pageY) / 25;
+            card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+        });
+
+        // Gyroscope (Mobile)
+        window.addEventListener('deviceorientation', (e) => {
+            const x = e.gamma / 2; // Nghiêng trái phải
+            const y = e.beta / 2;  // Nghiêng trước sau
+            card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+        });
+
+        /* --- 2. APP LOGIC --- */
+        const app = {
+            audio: document.getElementById('bg-music'),
+            text: "Cung chúc tân xuân, vạn sự như ý. \n\n Năm Ất Tỵ 2026, chúc bạn: \n Tâm vững như núi, \n Chí sáng như sao. \n Tiền tài sung túc, \n Hạnh phúc đong đầy. \n\n Mọi lo toan năm cũ xin gửi lại phía sau, để đón chào một hành trình mới rực rỡ và thăng hoa hơn!",
+            
+            start: function() {
+                this.audio.play().catch(e => console.log("Audio block: " + e));
+                this.next(1);
+                this.loadingSim();
+            },
+
+            next: function(currIdx) {
+                document.getElementById(`p${currIdx}`).classList.remove('active');
+                document.getElementById(`p${currIdx}`).classList.add('exit');
+                
+                setTimeout(() => {
+                    const nextScreen = document.getElementById(`p${currIdx+1}`);
+                    if(nextScreen) nextScreen.classList.add('active');
+                }, 500);
+            },
+
+            loadingSim: function() {
+                let width = 0;
+                const bar = document.getElementById('progress');
+                const interval = setInterval(() => {
+                    width += Math.random() * 5;
+                    if(width > 100) {
+                        width = 100;
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            this.next(2);
+                            this.typeWriter();
+                        }, 500);
+                    }
+                    bar.style.width = width + '%';
+                }, 100);
+            },
+
+            typeWriter: function() {
+                const el = document.getElementById('type-content');
+                el.innerText = ""; // Clear text
+                // Format text with line breaks
+                const lines = this.text.split('\n');
+                let lineIdx = 0;
+                let charIdx = 0;
+
+                const type = () => {
+                    if (lineIdx < lines.length) {
+                        const currentLine = lines[lineIdx];
+                        if (charIdx < currentLine.length) {
+                            el.innerHTML += currentLine.charAt(charIdx);
+                            charIdx++;
+                            setTimeout(type, 40);
+                        } else {
+                            el.innerHTML += "<br>";
+                            lineIdx++;
+                            charIdx = 0;
+                            setTimeout(type, 100);
+                        }
+                    }
+                };
+                setTimeout(type, 1000); // Wait for transition
+            }
+        };
+
+        /* --- 3. ADVANCED PARTICLES (Lanterns & Fireflies) --- */
+        const canvas = document.getElementById('canvas-fx');
+        const ctx = canvas.getContext('2d');
+        let w, h;
+
+        function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+        resize(); window.addEventListener('resize', resize);
+
+        const particles = [];
+        const colors = ['#FFD700', '#FF4500', '#FF6347']; // Gold, Orange-Red
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * w;
+                this.y = h + Math.random() * 100; // Start below screen
+                this.speed = Math.random() * 1.5 + 0.5;
+                this.size = Math.random() * 3 + 1;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.swing = Math.random() * 2; // For wavy movement
+                this.counter = 0;
+            }
+            update() {
+                this.y -= this.speed;
+                this.counter += 0.02;
+                this.x += Math.sin(this.counter) * 0.5; // Wavy motion
+                
+                if (this.y < -50) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                // Draw glowing circle (Firefly style)
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        for(let i=0; i<60; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+    </script>
+</body>
+</html>
